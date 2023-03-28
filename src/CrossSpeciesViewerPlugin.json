@@ -1,0 +1,5 @@
+{
+    "name" : "Cross-Species Viewer Control",
+    "version" : "0.1.0",
+    "dependencies": ["Cluster","Points","Hierarchical Cluster Selection", "Cluster Differential Expression","SimianViewerScatterplot View"]
+}
