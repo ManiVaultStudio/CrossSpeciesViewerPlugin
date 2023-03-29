@@ -130,6 +130,11 @@ namespace
                         for(auto child : children)
                                 result << child;
                     }
+                    else
+                    {
+                        if (dataset->getGuiName().contains("Cluster Differential Expression 1::SelectedIDMeanExpressionsDataset"))
+                            result << dataset;
+                    }
                     
 
                 }
@@ -151,24 +156,28 @@ namespace CytosploreViewerPlugin
         , _pointsDatasetsAction(this, 3, "PointDatasets", "Point Datasets")
         , _colorDatasetsAction(this, 3, "ColorDatasets", "Color Datasets")
         , _settingsAction(this)
-        , _colorMapAction(this, "Color")
+        , _colorMapAction(this, "Color map")
         , _sizeAction(this, "Point Size", 0.0, 100.0, 10, 10)
         , _opacityAction(this, "Opacity", 0.0, 100.0, 50.0, 50.0)
-        , _clusterColorOptionAction(this, "Meta-Data")
+        , _clusterColorOptionAction(this, "Map Coloring")
         , _tsneMapOptionAction(this, "Select tSNE map")
 		, _dimensionXPickerAction(this,"X")
 		, _dimensionYPickerAction(this,"Y")
 		, _selectionColorAction(this,"Selection Color")
+		, _selectedIdAction(this,"SelectedId")
+		, _selectedIdActionWidget(nullptr)
+		, _colorMapWidget(nullptr)
+
     {
         setSerializationName(getGuiName());
 
 
-        local::setDatabaseFilterFunction(_pointsDatasetsAction.data(HUMAN)->datasetPickerAction, "Human", PointType);
-        local::setDatabaseFilterFunction(_pointsDatasetsAction.data(MARMOSET)->datasetPickerAction, "Marmoset", PointType);
-        local::setDatabaseFilterFunction(_pointsDatasetsAction.data(MOUSE)->datasetPickerAction, "Mouse", PointType);
-        _pointsDatasetsAction.data(HUMAN)->datasetPickerAction.setCurrentText("NumericalMetaData");
-        _pointsDatasetsAction.data(MARMOSET)->datasetPickerAction.setCurrentText("NumericalMetaData");
-        _pointsDatasetsAction.data(MOUSE)->datasetPickerAction.setCurrentText("NumericalMetaData");
+      //  local::setDatabaseFilterFunction(_pointsDatasetsAction.data(HUMAN)->datasetPickerAction, "Human", PointType);
+     //   local::setDatabaseFilterFunction(_pointsDatasetsAction.data(MARMOSET)->datasetPickerAction, "Marmoset", PointType);
+     //   local::setDatabaseFilterFunction(_pointsDatasetsAction.data(MOUSE)->datasetPickerAction, "Mouse", PointType);
+     //   _pointsDatasetsAction.data(HUMAN)->datasetPickerAction.setCurrentText("NumericalMetaData");
+     //   _pointsDatasetsAction.data(MARMOSET)->datasetPickerAction.setCurrentText("NumericalMetaData");
+     //   _pointsDatasetsAction.data(MOUSE)->datasetPickerAction.setCurrentText("NumericalMetaData");
 
         local::setDatabaseFilterFunction(_colorDatasetsAction.data(HUMAN)->datasetPickerAction, "Human", ClusterType);
         local::setDatabaseFilterFunction(_colorDatasetsAction.data(MARMOSET)->datasetPickerAction, "Marmoset", ClusterType);
@@ -184,24 +193,28 @@ namespace CytosploreViewerPlugin
 
         
 
-        _clusterColorOptionAction.setOptions({ "class","subclass","cross_species_cluster"});
-        connect(&_clusterColorOptionAction, &OptionAction::currentTextChanged, this, &CrossSpeciesViewerPlugin::clusterSelectionChanged);
+        _clusterColorOptionAction.setOptions({ "Class","Subclass","Cross-species Cluster", "Mean Expressions"});
+        connect(&_clusterColorOptionAction, &OptionAction::currentTextChanged, this, &CrossSpeciesViewerPlugin::mapColoringChanged);
 
         _tsneMapOptionAction.setOptions({ "Overview", "GABAergic", "Glutamatergic", "Non-Neuronal" });
         connect(&_tsneMapOptionAction, &OptionAction::currentTextChanged, this, &CrossSpeciesViewerPlugin::mapSelectionChanged);
 
         _dimensionXPickerAction.setPointsDataset(_pointsDatasetsAction.data(HUMAN)->currentDataset);
         _dimensionYPickerAction.setPointsDataset(_pointsDatasetsAction.data(HUMAN)->currentDataset);
-        _serializedActions.push_back(&_pointsDatasetsAction);
-        _serializedActions.push_back(&_colorDatasetsAction);
-        _serializedActions.push_back(&_colorMapAction);
-        _serializedActions.push_back(&_sizeAction);
-        _serializedActions.push_back(&_opacityAction);
-        _serializedActions.push_back(&_clusterColorOptionAction);
-        _serializedActions.push_back(&_tsneMapOptionAction);
-        _serializedActions.push_back(&_dimensionXPickerAction);
-        _serializedActions.push_back(&_dimensionYPickerAction);
-        _serializedActions.push_back(&_selectionColorAction);
+
+        serializeAction(&_pointsDatasetsAction);
+        serializeAction(&_colorDatasetsAction);
+        serializeAction(&_settingsAction);
+        serializeAction(&_colorMapAction);
+        serializeAction(&_sizeAction);
+        serializeAction(&_opacityAction);
+        serializeAction(&_clusterColorOptionAction);
+        serializeAction(&_tsneMapOptionAction);
+        serializeAction(&_dimensionXPickerAction);
+        serializeAction(&_dimensionYPickerAction);
+        serializeAction(&_selectionColorAction);
+        serializeAction(&_selectedIdAction);
+        
     }
 
     QString CrossSpeciesViewerPlugin::getOriginalName() const
@@ -220,38 +233,60 @@ namespace CytosploreViewerPlugin
        // mainWidget.setAcceptDrops(true);
         mainWidget.setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 
-        const int margin = 0;
+        const int margin = 5;
         mainLayout->setContentsMargins(margin, margin, margin, margin);
-        mainLayout->setSpacing(0);
+        mainLayout->setSpacing(2);
 
         
         
         auto *widget = _settingsAction.createWidget(&mainWidget);
        // widget->hide();
         int row = 0;
-        mainLayout->addWidget(widget, row, 0, 1, 4);
+        mainLayout->addWidget(widget, row, 0, 1, 10);
         mainLayout->setRowStretch(row, 1);
 
         row++;
-        mainLayout->addWidget(_tsneMapOptionAction.createLabelWidget(&mainWidget), row, 0);
-        mainLayout->addWidget(_tsneMapOptionAction.createWidget(&mainWidget), row, 1);
-        mainLayout->addWidget(_clusterColorOptionAction.createLabelWidget(&mainWidget), row, 2);
-        mainLayout->addWidget(_clusterColorOptionAction.createWidget(&mainWidget), row, 3);
+        int column = 0;
+        mainLayout->addWidget(_tsneMapOptionAction.createLabelWidget(&mainWidget), row, column++);
+        mainLayout->addWidget(_tsneMapOptionAction.createWidget(&mainWidget), row, column++);
         mainLayout->setRowStretch(row, 50);
-
         row++;
-        mainLayout->addWidget(_colorMapAction.createLabelWidget(&mainWidget), row, 0);
-        mainLayout->addWidget(_colorMapAction.createWidget(&mainWidget), row, 1);
+        column = 0;
+        mainLayout->addWidget(_clusterColorOptionAction.createLabelWidget(&mainWidget), row, column++);
+        mainLayout->addWidget(_clusterColorOptionAction.createWidget(&mainWidget), row, column++);
+        _selectedIdActionWidget = _selectedIdAction.createWidget(&mainWidget);
+        mainLayout->addWidget(_selectedIdActionWidget, row, column++);
         mainLayout->setRowStretch(row, 50);
-
-        row++;
-        mainLayout->addWidget(_sizeAction.createLabelWidget(&mainWidget), row, 0);
-        mainLayout->addWidget(_sizeAction.createWidget(&mainWidget), row, 1);
-        mainLayout->addWidget(_opacityAction.createLabelWidget(&mainWidget), row, 2);
-        mainLayout->addWidget(_opacityAction.createWidget(&mainWidget), row, 3);
-        mainLayout->setRowStretch(row, 50);
-
+        _colorMapWidget = _colorMapAction.createWidget(&mainWidget, ColorMapAction::EditRange);
+        mainLayout->addWidget(_colorMapWidget, row, column++);
+       
         
+        mainLayout->setRowStretch(row, 50);
+
+        row++;
+        column = 0;
+        mainLayout->addWidget(_sizeAction.createLabelWidget(&mainWidget), row, column++);
+
+    	QHBoxLayout* horizontalLayout = new QHBoxLayout(&mainWidget);
+        horizontalLayout->addWidget(_sizeAction.createWidget(&mainWidget, DecimalAction::Slider));
+        horizontalLayout->addWidget(_opacityAction.createLabelWidget(&mainWidget));
+        horizontalLayout->addWidget(_opacityAction.createWidget(&mainWidget, DecimalAction::Slider));
+        mainLayout->addLayout(horizontalLayout, row++, column, 1, 8);
+        mainLayout->setRowStretch(row, 50);
+        
+        mainLayout->setColumnStretch(0, 1);
+        mainLayout->setColumnMinimumWidth(0, 100);
+        mainLayout->setColumnStretch(1, 1);
+        mainLayout->setColumnMinimumWidth(1, 100);
+        mainLayout->setColumnStretch(2, 1);
+        mainLayout->setColumnMinimumWidth(2, 100);
+        mainLayout->setColumnStretch(3, 1);
+        mainLayout->setColumnMinimumWidth(3, 100);
+        mainLayout->setColumnStretch(4, 1);
+        mainLayout->setColumnMinimumWidth(4, 100);
+        mainLayout->setColumnStretch(5, 1);
+        mainLayout->setColumnMinimumWidth(5, 100);
+        mainLayout->setColumnStretch(6, 99);
         
     }
 
@@ -275,21 +310,7 @@ namespace CytosploreViewerPlugin
 
     void CrossSpeciesViewerPlugin::fromVariantMap(const QVariantMap& variantMap)
     {
-
         
-
-        ViewPlugin::fromVariantMap(variantMap);
-        auto version = variantMap.value("CrossSpeciesViewerPluginVersion", QVariant::fromValue(uint(0))).toUInt();
-        if (version > 0)
-        {
-            for (auto action : _serializedActions)
-            {
-                if (variantMap.contains(action->getSerializationName()))
-                    action->fromParentVariantMap(variantMap);
-
-            }
-        }
-
         _pointsDatasetsAction.data(HUMAN)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 1::Embedding");
         _colorDatasetsAction.data(HUMAN)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 1::Color");
 
@@ -300,16 +321,40 @@ namespace CytosploreViewerPlugin
         _colorDatasetsAction.data(MOUSE)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 3::Color");
 
 
+
         const auto globalPointSizeName = "GlobalPointSize";
         const auto globalPointOpacityName = "GlobalPointOpacity";
         _sizeAction.connectToPublicActionByName(globalPointSizeName);
         _opacityAction.connectToPublicActionByName(globalPointOpacityName);
 
+        _colorMapAction.connectToPublicActionByName("GlobalColorMap");
 
         //_dimensionXPickerAction.connectToPublicActionByName("GlobalDimensionX");
        // _dimensionYPickerAction.connectToPublicActionByName("GlobalDimensionY");
         _selectionColorAction.setConnectionPermissionsFlag(ConnectionPermissionFlag::ConnectViaApi);
         _selectionColorAction.connectToPublicActionByName("GlobalSelectionColor");
+
+        _selectedIdAction.setConnectionPermissionsFlag(ConnectionPermissionFlag::ConnectViaApi);
+        _selectedIdAction.connectToPublicActionByName("Cluster Differential Expression 1::LastSelectedId");
+        connect(&_selectedIdAction, &StringAction::stringChanged, this, [this](const QString& dummy)->void {this->_clusterColorOptionAction.setCurrentText("Mean Expressions"); });
+
+        ViewPlugin::fromVariantMap(variantMap);
+        auto version = variantMap.value("CrossSpeciesViewerPluginVersion", QVariant::fromValue(uint(0))).toUInt();
+        if (version > 0)
+        {
+            for (auto action : _serializedActions)
+            {
+               
+                if (variantMap.contains(action->getSerializationName()))
+                    action->fromParentVariantMap(variantMap);
+
+            }
+        }
+
+        for(qsizetype i=0; i < _colorDatasetsAction.size(); ++i)
+			_colorDatasetsAction.data(i)->datasetPickerAction.setCurrentText("class");
+
+        _clusterColorOptionAction.setCurrentText("Class");
     }
 
     QVariantMap CrossSpeciesViewerPlugin::toVariantMap() const
@@ -326,7 +371,18 @@ namespace CytosploreViewerPlugin
 
     }
 
-
+    void CrossSpeciesViewerPlugin::serializeAction(WidgetAction* w)
+    {
+        assert(w != nullptr);
+        if (w == nullptr)
+            return;
+        QString name = w->text();
+        assert(!name.isEmpty());
+        QString apiName = local::toCamelCase(name, ' ');
+       // w->setConnectionPermissionsFlag(ConnectionPermissionFlag::All);
+        w->setSerializationName(apiName);
+    	_serializedActions.append(w);
+    }
 
     void CrossSpeciesViewerPlugin::publishAndSerializeAction(WidgetAction* w, bool serialize)
     {
@@ -344,12 +400,46 @@ namespace CytosploreViewerPlugin
     }
 
 
-    void CrossSpeciesViewerPlugin::clusterSelectionChanged(const QString& label)
+    void CrossSpeciesViewerPlugin::mapColoringChanged(const QString& option)
     {
+        QString label = "";
+        bool cluster_label = true;
+        if (option == "Class")
+        {
+            label = "class";
+        }
+        else if (option == "Subclass")
+        {
+            label = "subclass";
+        }
+        else if (option == "Cross-species Cluster")
+        {
+            label = "cross_species_cluster";
+        }
+        else
+        {
+            cluster_label = false;
+            label = "Cluster Differential Expression 1::SelectedIDMeanExpressionsDataset ";
+            
+        }
         for (qsizetype i = 0; i < _colorDatasetsAction.size(); ++i)
         {
-            _colorDatasetsAction.data(i)->datasetPickerAction.setCurrentText(label);
+            if (cluster_label)
+            {
+                _colorDatasetsAction.data(i)->datasetPickerAction.setCurrentText(label);
+                _selectedIdActionWidget->hide();
+                _colorMapWidget->hide();
+            }
+            else
+            {
+                QString specific_label = label + QString::number(i);
+                qDebug() << "mapColoringChanged " << specific_label;
+                _colorDatasetsAction.data(i)->datasetPickerAction.setCurrentText(specific_label);
+                _selectedIdActionWidget->show();
+                _colorMapWidget->show();
+            }
         }
+        
 	    
     }
     void CrossSpeciesViewerPlugin::mapSelectionChanged(const QString& label)
