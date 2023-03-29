@@ -311,28 +311,28 @@ namespace CytosploreViewerPlugin
     void CrossSpeciesViewerPlugin::fromVariantMap(const QVariantMap& variantMap)
     {
         
-        _pointsDatasetsAction.data(HUMAN)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 1::Embedding");
-        _colorDatasetsAction.data(HUMAN)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 1::Color");
+        _pointsDatasetsAction.data(HUMAN)->datasetPickerAction.connectToPublicActionByName("ViewerScatterplot 1::Embedding");
+        _colorDatasetsAction.data(HUMAN)->datasetPickerAction.connectToPublicActionByName("ViewerScatterplot 1::Color");
 
-        _pointsDatasetsAction.data(MARMOSET)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 2::Embedding");
-        _colorDatasetsAction.data(MARMOSET)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 2::Color");
+        _pointsDatasetsAction.data(MARMOSET)->datasetPickerAction.connectToPublicActionByName("ViewerScatterplot 2::Embedding");
+        _colorDatasetsAction.data(MARMOSET)->datasetPickerAction.connectToPublicActionByName("ViewerScatterplot 2::Color");
 
-        _pointsDatasetsAction.data(MOUSE)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 3::Embedding");
-        _colorDatasetsAction.data(MOUSE)->datasetPickerAction.connectToPublicActionByName("SimianViewerScatterplot View 3::Color");
+        _pointsDatasetsAction.data(MOUSE)->datasetPickerAction.connectToPublicActionByName("ViewerScatterplot 3::Embedding");
+        _colorDatasetsAction.data(MOUSE)->datasetPickerAction.connectToPublicActionByName("ViewerScatterplot 3::Color");
 
 
 
-        const auto globalPointSizeName = "GlobalPointSize";
-        const auto globalPointOpacityName = "GlobalPointOpacity";
+        const auto globalPointSizeName = "ViewerScatterplot::GlobalPointSize";
+        const auto globalPointOpacityName = "ViewerScatterplot::GlobalPointOpacity";
         _sizeAction.connectToPublicActionByName(globalPointSizeName);
         _opacityAction.connectToPublicActionByName(globalPointOpacityName);
 
-        _colorMapAction.connectToPublicActionByName("GlobalColorMap");
+        _colorMapAction.connectToPublicActionByName("ViewerScatterplot::GlobalColorMap");
 
         //_dimensionXPickerAction.connectToPublicActionByName("GlobalDimensionX");
        // _dimensionYPickerAction.connectToPublicActionByName("GlobalDimensionY");
         _selectionColorAction.setConnectionPermissionsFlag(ConnectionPermissionFlag::ConnectViaApi);
-        _selectionColorAction.connectToPublicActionByName("GlobalSelectionColor");
+        _selectionColorAction.connectToPublicActionByName("ViewerScatterplot::GlobalSelectionColor");
 
         _selectedIdAction.setConnectionPermissionsFlag(ConnectionPermissionFlag::ConnectViaApi);
         _selectedIdAction.connectToPublicActionByName("Cluster Differential Expression 1::LastSelectedId");
