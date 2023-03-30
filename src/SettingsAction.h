@@ -70,6 +70,7 @@ public:
     QMenu* getContextMenu();
 
     void addAction(WidgetAction &action, qsizetype priority=0);
+protected:
 
 protected:
     QVector<WidgetAction*>   _actions;

@@ -74,7 +74,7 @@ namespace  CytosploreViewerPlugin
 
     private:
 
-
+        void serializeAction(WidgetAction* w);
         void publishAndSerializeAction(WidgetAction* w, bool serialize = true);
 
 
@@ -82,23 +82,27 @@ namespace  CytosploreViewerPlugin
 
     protected slots:
 
-        void clusterSelectionChanged(const QString& label);
+        void mapColoringChanged(const QString& label);
         void mapSelectionChanged(const QString& label);
 
     private:
-        const QString                       _originalName;
-        QVector<WidgetAction*>              _serializedActions;
-        SelectedDatasetsAction              _pointsDatasetsAction;
-        SelectedDatasetsAction              _colorDatasetsAction;
-        SettingsAction                      _settingsAction;
-        ColorMapAction                      _colorMapAction;
+        const QString                        _originalName;
+        QVector<WidgetAction*>               _serializedActions;
+        SelectedDatasetsAction               _pointsDatasetsAction;
+        SelectedDatasetsAction               _colorDatasetsAction;
+        SettingsAction                       _settingsAction;
+        ColorMapAction                       _colorMapAction;
         DecimalAction                        _sizeAction;                /** Point size action */
         DecimalAction                        _opacityAction; /** Point opacity action */
-        OptionAction                        _clusterColorOptionAction;
-        OptionAction                        _tsneMapOptionAction;
-        DimensionPickerAction               _dimensionXPickerAction;
-        DimensionPickerAction               _dimensionYPickerAction;
-        ColorAction                         _selectionColorAction;
+        OptionAction                         _clusterColorOptionAction;
+        //OptionAction                         _tsneMapOptionAction;
+       // DimensionPickerAction                _dimensionXPickerAction;
+       // DimensionPickerAction                _dimensionYPickerAction;
+        ColorAction                          _selectionColorAction;
+        StringAction                         _selectedIdAction;
+        QWidget*                             _selectedIdActionWidget;
+        QWidget*                             _colorMapWidget;
+       
     };
 
 
