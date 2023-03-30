@@ -95,13 +95,14 @@ namespace  CytosploreViewerPlugin
         DecimalAction                        _sizeAction;                /** Point size action */
         DecimalAction                        _opacityAction; /** Point opacity action */
         OptionAction                         _clusterColorOptionAction;
-        OptionAction                         _tsneMapOptionAction;
-        DimensionPickerAction                _dimensionXPickerAction;
-        DimensionPickerAction                _dimensionYPickerAction;
+        //OptionAction                         _tsneMapOptionAction;
+       // DimensionPickerAction                _dimensionXPickerAction;
+       // DimensionPickerAction                _dimensionYPickerAction;
         ColorAction                          _selectionColorAction;
         StringAction                         _selectedIdAction;
         QWidget*                             _selectedIdActionWidget;
         QWidget*                             _colorMapWidget;
+       
     };
 
 

@@ -160,14 +160,13 @@ namespace CytosploreViewerPlugin
         , _sizeAction(this, "Point Size", 0.0, 100.0, 10, 10)
         , _opacityAction(this, "Opacity", 0.0, 100.0, 50.0, 50.0)
         , _clusterColorOptionAction(this, "Map Coloring")
-        , _tsneMapOptionAction(this, "Select tSNE map")
-		, _dimensionXPickerAction(this,"X")
-		, _dimensionYPickerAction(this,"Y")
-		, _selectionColorAction(this,"Selection Color")
-		, _selectedIdAction(this,"SelectedId")
-		, _selectedIdActionWidget(nullptr)
-		, _colorMapWidget(nullptr)
-
+        //, _tsneMapOptionAction(this, "Select tSNE map")
+       // , _dimensionXPickerAction(this, "X")
+       // , _dimensionYPickerAction(this, "Y")
+        , _selectionColorAction(this, "Selection Color")
+        , _selectedIdAction(this, "SelectedId")
+        , _selectedIdActionWidget(nullptr)
+        , _colorMapWidget(nullptr)
     {
         setSerializationName(getGuiName());
 
@@ -196,12 +195,13 @@ namespace CytosploreViewerPlugin
         _clusterColorOptionAction.setOptions({ "Class","Subclass","Cross-species Cluster", "Mean Expressions"});
         connect(&_clusterColorOptionAction, &OptionAction::currentTextChanged, this, &CrossSpeciesViewerPlugin::mapColoringChanged);
 
+        /*
         _tsneMapOptionAction.setOptions({ "Overview", "GABAergic", "Glutamatergic", "Non-Neuronal" });
         connect(&_tsneMapOptionAction, &OptionAction::currentTextChanged, this, &CrossSpeciesViewerPlugin::mapSelectionChanged);
 
         _dimensionXPickerAction.setPointsDataset(_pointsDatasetsAction.data(HUMAN)->currentDataset);
         _dimensionYPickerAction.setPointsDataset(_pointsDatasetsAction.data(HUMAN)->currentDataset);
-
+        */
         serializeAction(&_pointsDatasetsAction);
         serializeAction(&_colorDatasetsAction);
         serializeAction(&_settingsAction);
@@ -209,9 +209,9 @@ namespace CytosploreViewerPlugin
         serializeAction(&_sizeAction);
         serializeAction(&_opacityAction);
         serializeAction(&_clusterColorOptionAction);
-        serializeAction(&_tsneMapOptionAction);
-        serializeAction(&_dimensionXPickerAction);
-        serializeAction(&_dimensionYPickerAction);
+//        serializeAction(&_tsneMapOptionAction);
+//        serializeAction(&_dimensionXPickerAction);
+//        serializeAction(&_dimensionYPickerAction);
         serializeAction(&_selectionColorAction);
         serializeAction(&_selectedIdAction);
         
@@ -242,14 +242,17 @@ namespace CytosploreViewerPlugin
         auto *widget = _settingsAction.createWidget(&mainWidget);
        // widget->hide();
         int row = 0;
+        int column = 0;
         mainLayout->addWidget(widget, row, 0, 1, 10);
         mainLayout->setRowStretch(row, 1);
 
+        /*
         row++;
-        int column = 0;
+        
         mainLayout->addWidget(_tsneMapOptionAction.createLabelWidget(&mainWidget), row, column++);
         mainLayout->addWidget(_tsneMapOptionAction.createWidget(&mainWidget), row, column++);
         mainLayout->setRowStretch(row, 50);
+        */
         row++;
         column = 0;
         mainLayout->addWidget(_clusterColorOptionAction.createLabelWidget(&mainWidget), row, column++);
@@ -337,6 +340,14 @@ namespace CytosploreViewerPlugin
         _selectedIdAction.setConnectionPermissionsFlag(ConnectionPermissionFlag::ConnectViaApi);
         _selectedIdAction.connectToPublicActionByName("Cluster Differential Expression 1::LastSelectedId");
         connect(&_selectedIdAction, &StringAction::stringChanged, this, [this](const QString& dummy)->void {this->_clusterColorOptionAction.setCurrentText("Mean Expressions"); });
+
+        /*
+        _rightSideDEColumnAction.setConnectionPermissionsFlag(ConnectionPermissionFlag::ConnectViaApi);
+        _rightSideDEColumnAction.connectToPublicActionByName("Cluster Differential Expression 1::TableViewRightSideInfo");
+        QVariantMap emptColumn;
+        emptColumn["test"] = QVariantMap();
+        _rightSideDEColumnAction.setVariant(emptColumn);
+        */
 
         ViewPlugin::fromVariantMap(variantMap);
         auto version = variantMap.value("CrossSpeciesViewerPluginVersion", QVariant::fromValue(uint(0))).toUInt();
@@ -446,8 +457,8 @@ namespace CytosploreViewerPlugin
     {
         QString x_label = "_" + label + "_X";
         QString y_label = "_" + label + "_Y";
-        _dimensionXPickerAction.setCurrentDimensionName(x_label);
-        _dimensionYPickerAction.setCurrentDimensionName(y_label);
+//        _dimensionXPickerAction.setCurrentDimensionName(x_label);
+//        _dimensionYPickerAction.setCurrentDimensionName(y_label);
         
 
     }
