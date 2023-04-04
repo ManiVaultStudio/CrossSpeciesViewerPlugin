@@ -4,9 +4,9 @@
 #include "SelectedDatasetsAction.h"
 
 // HDPS includes
-#include "PointData.h"
+#include "PointData/PointData.h"
 #include <QDebug>
-#include "ClusterData.h"
+#include "ClusterData/ClusterData.h"
 #include "event/Event.h"
 
 
