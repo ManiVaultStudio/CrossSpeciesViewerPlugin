@@ -15,7 +15,7 @@
 #include "actions/Actions.h"
 #include "actions/VariantAction.h"
 
-#include "DimensionPickerAction.h"
+#include "PointData/DimensionPickerAction.h"
 
 
 
