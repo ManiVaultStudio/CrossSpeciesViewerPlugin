@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 3.17.0)
 
-set(PROJECT "CrossSpeciesViewerPlugin")
+set(PROJECT "CrossSpeciesSharedSettingsPlugin")
 
 PROJECT(${PROJECT})
+
+set(CMAKE_AUTOMOC ON)
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W3 /DWIN32 /EHsc /MP /permissive- /Zc:__cplusplus")
@@ -19,25 +21,21 @@ file(TO_CMAKE_PATH ${INSTALL_DIR} INSTALL_DIR)
 find_package(Qt6 COMPONENTS Widgets WebEngineWidgets REQUIRED)
 
 set(PLUGIN
-    src/CrossSpeciesViewerPlugin.h
-    src/CrossSpeciesViewerPlugin.cpp
+    src/CrossSpeciesSharedSettingsPlugin.h
+    src/CrossSpeciesSharedSettingsPlugin.cpp
 )
 
 set(PLUGIN_MOC_HEADERS
-    src/ScatterplotPlugin.h
+    src/CrossSpeciesSharedSettingsPlugin.h
 )
 
 set(ACTIONS
-    src/PluginAction.h
-    src/PluginAction.cpp
-    src/SettingsAction.h
-    src/SettingsAction.cpp
-    src/SelectedDatasetsAction.h
-    src/SelectedDatasetsAction.cpp
+    src/SharedSettingsAction.h
+    src/SharedSettingsAction.cpp
 )
 
 set(AUX
-    src/CrossSpeciesViewerPlugin.json
+    src/CrossSpeciesSharedSettingsPlugin.json
 )
 
 set(SOURCES ${PLUGIN} ${ACTIONS})
@@ -46,10 +44,10 @@ source_group(Plugin FILES ${SOURCES})
 source_group(Actions FILES ${ACTIONS})
 source_group(Aux FILES ${AUX})
 
-add_library(${PROJECT} SHARED ${SOURCES} ${UTIL} ${AUX} ${WIDGETS})
+add_library(${PROJECT} SHARED ${SOURCES} ${AUX})
 
-qt_wrap_cpp(CROSSVIEWER_MOC ${PLUGIN_MOC_HEADERS} TARGET ${PROJECT})
-target_sources(${PROJECT} PRIVATE ${CROSSVIEWER_MOC})
+qt_wrap_cpp(SHAREDSETTINGS_MOC ${PLUGIN_MOC_HEADERS} TARGET ${PROJECT})
+target_sources(${PROJECT} PRIVATE ${SHAREDSETTINGS_MOC})
 
 target_include_directories(${PROJECT} PRIVATE "${INSTALL_DIR}/$<CONFIGURATION>/include/")
 
@@ -86,31 +84,4 @@ add_custom_command(TARGET ${PROJECT} POST_BUILD
 if(MSVC)
     set_property(TARGET ${PROJECT} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY $<IF:$<CONFIG:DEBUG>,$ENV{HDPS_INSTALL_DIR}/debug,$ENV{HDPS_INSTALL_DIR}/release>)
     set_property(TARGET ${PROJECT} PROPERTY VS_DEBUGGER_COMMAND $<IF:$<CONFIG:DEBUG>,$ENV{HDPS_INSTALL_DIR}/debug/HDPS.exe,$ENV{HDPS_INSTALL_DIR}/release/HDPS.exe>)
-
-    set_target_properties(${PROJECT} PROPERTIES VS_DEBUGGER_ENVIRONMENT "PATH=%PATH%;${Qt6_DIR}/../../../bin;$<$<CONFIG:DEBUG>:$ENV{HDPS_INSTALL_DIR}/debug>; $<$<CONFIG:RELEASE>:$ENV{HDPS_INSTALL_DIR}/release>")
 endif()
-
-if(APPLE)
-    target_link_libraries("${PROJECT}" PUBLIC debug "/usr/local/lib/libomp.dylib")
-    target_link_libraries("${PROJECT}" PUBLIC optimized "/usr/local/lib/libomp.dylib")       
-endif()
-
-find_package(OpenMP REQUIRED)
-if(OpenMP_FOUND)
-    message(STATUS "OpenMP found")
-    target_link_libraries(${PROJECT} PUBLIC OpenMP::OpenMP_CXX)
-    target_compile_options(${PROJECT} PRIVATE ${OpenMP_CXX_FLAGS})
-else()
-    message(WARNING "OpenMP not found!")
-endif()
-
- macro(print_all_variables)
-    message(STATUS "print_all_variables------------------------------------------{")
-    get_cmake_property(_variableNames VARIABLES)
-    foreach (_variableName ${_variableNames})
-        message(STATUS "${_variableName}=${${_variableName}}")
-    endforeach()
-    message(STATUS "print_all_variables------------------------------------------}")
-endmacro()
-
-#print_all_variables()   
