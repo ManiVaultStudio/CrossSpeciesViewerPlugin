@@ -60,31 +60,15 @@ SharedSettingsAction::Widget::Widget(QWidget* parent, SharedSettingsAction* shar
     layout->setContentsMargins(margin, margin, margin, margin);
     layout->setSpacing(2);
 
-    layout->setRowStretch(0, 50);
-
     layout->addWidget(sharedSettingsAction->getClusterColorOptionAction().createLabelWidget(this), 0, 0);
     layout->addWidget(sharedSettingsAction->getClusterColorOptionAction().createWidget(this), 0, 1);
     layout->addWidget(sharedSettingsAction->getSelectedIdAction().createWidget(this), 0, 2);
     layout->addWidget(sharedSettingsAction->getColorMapAction().createWidget(this), 0, 3);
 
-    layout->setRowStretch(1, 50);
-
-    QHBoxLayout* horizontalLayout = new QHBoxLayout(this);
-    horizontalLayout->addWidget(sharedSettingsAction->getSizeAction().createLabelWidget(this));
-    horizontalLayout->addWidget(sharedSettingsAction->getSizeAction().createWidget(this, DecimalAction::Slider));
-    horizontalLayout->addWidget(sharedSettingsAction->getOpacityAction().createLabelWidget(this));
-    horizontalLayout->addWidget(sharedSettingsAction->getOpacityAction().createWidget(this, DecimalAction::Slider));
-
-    layout->addLayout(horizontalLayout, 1, 0, 1, 8);
-
-    for (const int row : {0, 1, 2, 3, 4, 5})
-    {
-        layout->setColumnStretch(row, 1);
-        layout->setColumnMinimumWidth(row, 100);
-    }
-
-    layout->setColumnStretch(6, 99);
+    layout->addWidget(sharedSettingsAction->getSizeAction().createLabelWidget(this), 1, 0);
+    layout->addWidget(sharedSettingsAction->getSizeAction().createWidget(this, DecimalAction::Slider), 1, 1);
+    layout->addWidget(sharedSettingsAction->getOpacityAction().createLabelWidget(this), 1, 2);
+    layout->addWidget(sharedSettingsAction->getOpacityAction().createWidget(this, DecimalAction::Slider), 1, 3);
 
     setLayout(layout);
-
 }
