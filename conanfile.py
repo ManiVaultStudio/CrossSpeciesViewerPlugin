@@ -12,15 +12,15 @@ class CrossSpeciesViewerPluginConan(ConanFile):
     """Class to package the Cross Species Viewer plugin using conan
 
     Packages both RELEASE and DEBUG.
-    Uses rules_support (github.com/hdps/rulessupport) to derive
+    Uses rules_support (github.com/ManiVaultStudio/rulessupport) to derive
     versioninfo based on the branch naming convention
-    as described in https://github.com/hdps/core/wiki/Branch-naming-rules
+    as described in https://github.com/ManiVaultStudio/core/wiki/Branch-naming-rules
     """
 
     name = "CrossSpeciesViewerPlugin"
     description = "Control cross species viewer settings"
-    topics = ("hdps", "plugin", "data", "Cross species viewer")
-    url = "https://github.com/hdps/CrossSpeciesViewerPlugin"
+    topics = ("ManiVault", "plugin", "data", "Cross species viewer")
+    url = "https://github.com/ManiVaultStudio/CrossSpeciesViewerPlugin"
     author = "J. Eggermont"
     license = "MIT"  # conan recipe license
 
@@ -34,7 +34,7 @@ class CrossSpeciesViewerPluginConan(ConanFile):
 
     scm = {
         "type": "git",
-        "subfolder": "hdps/CrossSpeciesViewerPlugin",
+        "subfolder": "ManiVaultStudio/CrossSpeciesViewerPlugin",
         "url": "auto",
         "revision": "auto",
     }
@@ -95,7 +95,7 @@ class CrossSpeciesViewerPluginConan(ConanFile):
 
     def _configure_cmake(self):
         cmake = CMake(self)
-        cmake.configure(build_script_folder="hdps/CrossSpeciesViewerPlugin")
+        cmake.configure(build_script_folder="ManiVaultStudio/CrossSpeciesViewerPlugin")
         cmake.verbose = True
         return cmake
 
