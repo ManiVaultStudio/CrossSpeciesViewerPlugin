@@ -1,5 +1,5 @@
 {
-    "name" : "Cross-Species Viewer Control",
+    "name" : "Cross-Species Shared Settings",
     "version" : "0.1.0",
-    "dependencies": ["Cluster","Points"]
+    "dependencies": []
 }
