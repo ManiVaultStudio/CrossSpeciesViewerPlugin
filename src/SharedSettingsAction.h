@@ -2,6 +2,7 @@
 
 #include "actions/Actions.h"
 #include "actions/ColorMap1DAction.h"
+#include <PointData/DimensionPickerAction.h>
 
 using namespace hdps;
 using namespace hdps::gui;
@@ -38,14 +39,14 @@ public: // Serialization
 
 public: // Action getters
     OptionAction& getClusterColorOptionAction() { return _clusterColorOptionAction; }
-    StringAction& getSelectedIdAction() { return _selectedIdAction; }
+    DimensionPickerAction& getSelectedIdAction() { return _selectedGeneNameAction; }
     ColorMap1DAction& getColorMapAction() { return _colorMapAction; }
     DecimalAction& getSizeAction() { return _sizeAction; }
     DecimalAction& getOpacityAction() { return _opacityAction; }
 
 private:
     OptionAction                         _clusterColorOptionAction;
-    StringAction                         _selectedIdAction;
+    DimensionPickerAction                _selectedGeneNameAction;
     ColorMap1DAction                     _colorMapAction;
     DecimalAction                        _sizeAction;
     DecimalAction                        _opacityAction;

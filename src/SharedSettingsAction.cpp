@@ -6,7 +6,7 @@ using namespace hdps::gui;
 SharedSettingsAction::SharedSettingsAction(QObject* parent) :
     WidgetAction(parent, "Shared Settings"),
     _clusterColorOptionAction(this, "Map Coloring", { "Class", "Subclass", "Cross-species Cluster", "Mean Expressions" }),
-    _selectedIdAction(this, "Selected Id"),
+    _selectedGeneNameAction(this, "Selected Dimension"),
     _colorMapAction(this, "Color Map"),
     _sizeAction(this, "Point Size", 0.0, 100.0, 10, 10),
     _opacityAction(this, "Opacity", 0.0, 100.0, 50.0, 50.0)
@@ -18,7 +18,7 @@ SharedSettingsAction::SharedSettingsAction(QObject* parent) :
     _opacityAction.setSuffix("%");
 
     _clusterColorOptionAction.setSerializationName("MapColoringAction");
-    _selectedIdAction.setSerializationName("SelectedIdAction");
+    _selectedGeneNameAction.setSerializationName("SelectedIdAction");
     _colorMapAction.setSerializationName("ColorMapction");
     _sizeAction.setSerializationName("PointSizeAction");
     _opacityAction.setSerializationName("OpacityAction");
@@ -29,7 +29,7 @@ void SharedSettingsAction::fromVariantMap(const QVariantMap& variantMap)
     WidgetAction::fromVariantMap(variantMap);
 
     _clusterColorOptionAction.fromParentVariantMap(variantMap);
-    _selectedIdAction.fromParentVariantMap(variantMap);
+    _selectedGeneNameAction.fromParentVariantMap(variantMap);
     _colorMapAction.fromParentVariantMap(variantMap);
     _sizeAction.fromParentVariantMap(variantMap);
     _opacityAction.fromParentVariantMap(variantMap);
@@ -40,7 +40,7 @@ QVariantMap SharedSettingsAction::toVariantMap() const
     QVariantMap variantMap = WidgetAction::toVariantMap();
 
     _clusterColorOptionAction.insertIntoVariantMap(variantMap);
-    _selectedIdAction.insertIntoVariantMap(variantMap);
+    _selectedGeneNameAction.insertIntoVariantMap(variantMap);
     _colorMapAction.insertIntoVariantMap(variantMap);
     _sizeAction.insertIntoVariantMap(variantMap);
     _opacityAction.insertIntoVariantMap(variantMap);
