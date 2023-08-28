@@ -17,6 +17,8 @@ CrossSpeciesSharedSettingsPlugin::CrossSpeciesSharedSettingsPlugin(const hdps::p
 {
 }
 
+CrossSpeciesSharedSettingsPlugin::~CrossSpeciesSharedSettingsPlugin() = default;
+
 void CrossSpeciesSharedSettingsPlugin::init()
 {
     getWidget().setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));

@@ -50,4 +50,5 @@ private:
     ColorMap1DAction                     _colorMapAction;
     DecimalAction                        _sizeAction;
     DecimalAction                        _opacityAction;
+    DatasetPickerAction	                 _datasetPickerAction;
 };

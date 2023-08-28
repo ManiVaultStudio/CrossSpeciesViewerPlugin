@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SharedSettingsAction.h"
+
 // ManiVault includes
 #include <ViewPlugin.h>
 
@@ -7,8 +9,6 @@
 
 using namespace hdps::plugin;
 using namespace hdps::gui;
-
-class SharedSettingsAction;
 
 // =============================================================================
 // ViewPlugin
@@ -20,6 +20,7 @@ class CrossSpeciesSharedSettingsPlugin : public ViewPlugin
 
 public:
     CrossSpeciesSharedSettingsPlugin(const hdps::plugin::PluginFactory* factory);
+    ~CrossSpeciesSharedSettingsPlugin();
 
     void init() override;
 

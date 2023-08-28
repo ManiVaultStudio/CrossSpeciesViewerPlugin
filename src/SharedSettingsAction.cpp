@@ -5,11 +5,12 @@ using namespace hdps::gui;
 
 SharedSettingsAction::SharedSettingsAction(QObject* parent) :
     WidgetAction(parent, "Shared Settings"),
-    _clusterColorOptionAction(this, "Map Coloring", { "Class", "Subclass", "Cross-species Cluster", "Mean Expressions" }),
+    _clusterColorOptionAction(this, "Color by", { "Constant", "Scatter layout", "Numerical MetaData", "Data/class", "Data/subclass", "Data/cross_species_cluster", "Mean Expressions" }),
     _selectedGeneNameAction(this, "Selected Dimension"),
     _colorMapAction(this, "Color Map"),
     _sizeAction(this, "Point Size", 0.0, 100.0, 10, 10),
-    _opacityAction(this, "Opacity", 0.0, 100.0, 50.0, 50.0)
+    _opacityAction(this, "Opacity", 0.0, 100.0, 50.0, 50.0),
+    _datasetPickerAction(this, "Dataset")
 {
     setText("Settings");
     setSerializationName("Settings");
@@ -18,10 +19,16 @@ SharedSettingsAction::SharedSettingsAction(QObject* parent) :
     _opacityAction.setSuffix("%");
 
     _clusterColorOptionAction.setSerializationName("MapColoringAction");
-    _selectedGeneNameAction.setSerializationName("SelectedIdAction");
+    _selectedGeneNameAction.setSerializationName("SelectedGeneNameAction");
     _colorMapAction.setSerializationName("ColorMapction");
     _sizeAction.setSerializationName("PointSizeAction");
     _opacityAction.setSerializationName("OpacityAction");
+
+    _datasetPickerAction.setSerializationName("DatasetPickerAction");
+
+    //connect(&_datasetPickerAction, &DatasetPickerAction::currentIndexChanged, this, [this](const int32_t& index) {
+    //    _selectedGeneNameAction.setText(_datasetPickerAction.getCurrentDataset().d
+    //    });
 }
 
 void SharedSettingsAction::fromVariantMap(const QVariantMap& variantMap)
@@ -33,6 +40,7 @@ void SharedSettingsAction::fromVariantMap(const QVariantMap& variantMap)
     _colorMapAction.fromParentVariantMap(variantMap);
     _sizeAction.fromParentVariantMap(variantMap);
     _opacityAction.fromParentVariantMap(variantMap);
+    _datasetPickerAction.fromParentVariantMap(variantMap);
 }
 
 QVariantMap SharedSettingsAction::toVariantMap() const
@@ -44,6 +52,7 @@ QVariantMap SharedSettingsAction::toVariantMap() const
     _colorMapAction.insertIntoVariantMap(variantMap);
     _sizeAction.insertIntoVariantMap(variantMap);
     _opacityAction.insertIntoVariantMap(variantMap);
+    _datasetPickerAction.insertIntoVariantMap(variantMap);
 
     return variantMap;
 }
@@ -62,8 +71,10 @@ SharedSettingsAction::Widget::Widget(QWidget* parent, SharedSettingsAction* shar
 
     layout->addWidget(sharedSettingsAction->getClusterColorOptionAction().createLabelWidget(this), 0, 0);
     layout->addWidget(sharedSettingsAction->getClusterColorOptionAction().createWidget(this), 0, 1);
-    layout->addWidget(sharedSettingsAction->getSelectedIdAction().createWidget(this), 0, 2);
-    layout->addWidget(sharedSettingsAction->getColorMapAction().createWidget(this), 0, 3);
+    layout->addWidget(sharedSettingsAction->getSelectedIdAction().createLabelWidget(this), 0, 2);
+    layout->addWidget(sharedSettingsAction->getSelectedIdAction().createWidget(this), 0, 3);
+    layout->addWidget(sharedSettingsAction->getColorMapAction().createLabelWidget(this), 0, 4);
+    layout->addWidget(sharedSettingsAction->getColorMapAction().createWidget(this), 0, 5);
 
     layout->addWidget(sharedSettingsAction->getSizeAction().createLabelWidget(this), 1, 0);
     layout->addWidget(sharedSettingsAction->getSizeAction().createWidget(this, DecimalAction::Slider), 1, 1);
