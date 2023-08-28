@@ -18,6 +18,8 @@ SharedSettingsAction::SharedSettingsAction(QObject* parent) :
     _sizeAction.setSuffix("px");
     _opacityAction.setSuffix("%");
 
+    _selectedGeneNameAction.setEnabled(false);
+
     _clusterColorOptionAction.setSerializationName("MapColoringAction");
     _selectedGeneNameAction.setSerializationName("SelectedGeneNameAction");
     _colorMapAction.setSerializationName("ColorMapction");
@@ -26,9 +28,14 @@ SharedSettingsAction::SharedSettingsAction(QObject* parent) :
 
     _datasetPickerAction.setSerializationName("DatasetPickerAction");
 
-    //connect(&_datasetPickerAction, &DatasetPickerAction::currentIndexChanged, this, [this](const int32_t& index) {
-    //    _selectedGeneNameAction.setText(_datasetPickerAction.getCurrentDataset().d
-    //    });
+    connect(&_clusterColorOptionAction, &OptionAction::currentTextChanged, this, [this](const QString& s) {
+
+        if (s == "Mean Expressions")
+            _selectedGeneNameAction.setEnabled(true);
+        else
+            _selectedGeneNameAction.setEnabled(false);
+
+        });
 }
 
 void SharedSettingsAction::fromVariantMap(const QVariantMap& variantMap)
