@@ -8,7 +8,7 @@ SharedSettingsAction::SharedSettingsAction(QObject* parent) :
     _clusterColorOptionAction(this, "Color by", { "Constant", "Scatter layout", "Numerical MetaData", "Data/class", "Data/subclass", "Data/cross_species_cluster", "Mean Expressions" }),
     _selectedGeneNameAction(this, "Selected Dimension"),
     _colorMapAction(this, "Color Map"),
-    _sizeAction(this, "Point Size", 0.0, 100.0, 10, 1),
+    _sizeAction(this, "Point Size", 0.0, 50.0, 10, 1),
     _opacityAction(this, "Opacity", 0.0, 100.0, 50.0, 1),
     _datasetPickerAction(this, "Dataset")
 {
@@ -20,8 +20,8 @@ SharedSettingsAction::SharedSettingsAction(QObject* parent) :
 
     _selectedGeneNameAction.setEnabled(false);
 
-    _sizeAction.setDefaultWidgetFlags(DecimalAction::SpinBox | DecimalAction::Slider);
-    _opacityAction.setDefaultWidgetFlags(DecimalAction::SpinBox | DecimalAction::Slider);
+    //_sizeAction.setDefaultWidgetFlags(DecimalAction::SpinBox | DecimalAction::Slider);
+    //_opacityAction.setDefaultWidgetFlags(DecimalAction::SpinBox | DecimalAction::Slider);
 
     _clusterColorOptionAction.setSerializationName("MapColoringAction");
     _selectedGeneNameAction.setSerializationName("SelectedGeneNameAction");
@@ -39,9 +39,9 @@ SharedSettingsAction::SharedSettingsAction(QObject* parent) :
             _selectedGeneNameAction.setEnabled(false);
 
         if (s == "Data/class" || s == "Data/subclass" || s == "Data/cross_species_cluster")
-            _colorMapAction.setEnabled(true);
-        else
             _colorMapAction.setEnabled(false);
+        else
+            _colorMapAction.setEnabled(true);
 
         });
 
